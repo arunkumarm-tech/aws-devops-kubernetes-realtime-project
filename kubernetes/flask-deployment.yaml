@@ -1,21 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: arun-flask-deployment
   namespace: arun-devops
+
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: arun-flask
+
   template:
     metadata:
       labels:
         app: arun-flask
+
     spec:
       containers:
         - name: arun-flask-container
-          image: arun-jenkins-flask-app:v1
+          image: 160827082645.dkr.ecr.us-east-1.amazonaws.com/arun-jenkins-flask-app:day9-amd64
           imagePullPolicy: IfNotPresent
+
           ports:
             - containerPort: 5000
+
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: arun-flask-config
+                  key: APP_ENV
+
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: arun-flask-config
+                  key: APP_MESSAGE
+
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: arun-flask-secret
+                  key: DB_USERNAME
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arun-flask-secret
+                  key: DB_PASSWORD
