@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+	PATH       = "/usr/local/bin:${env.PATH}"
         IMAGE_NAME = 'arun-jenkins-flask-app'
         IMAGE_TAG  = "build-${BUILD_NUMBER}"
     }
