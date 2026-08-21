@@ -43,5 +43,19 @@ stage('AWS CLI Check') {
                 }
             }
         }
+
+        stage('ECR Login') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh '''
+                        aws ecr get-login-password --region ${AWS_REGION} \
+                        | docker login \
+                          --username AWS \
+                          --password-stdin ${ECR_REGISTRY}
+                    '''
+                }
+            }
+        }
     }
 }
