@@ -102,5 +102,24 @@ stage('AWS CLI Check') {
                 }
             }
         }
+
+        stage('Deploy to EKS') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh '''
+                        export KUBECONFIG="${WORKSPACE}/.kubeconfig"
+
+                        kubectl set image deployment/arun-flask-deployment \
+                          arun-flask-container=${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} \
+                          -n arun-devops
+
+                        kubectl rollout status deployment/arun-flask-deployment \
+                          -n arun-devops \
+                          --timeout=180s
+                    '''
+                }
+            }
+        }
     }
 }
