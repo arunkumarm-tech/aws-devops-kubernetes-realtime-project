@@ -67,6 +67,13 @@ stage('AWS CLI Check') {
                 '''
             }
         }
+
+        stage('kubectl CLI Check') {
+            steps {
+                sh 'kubectl version --client'
+            }
+        }
+
         stage('Push Image to ECR') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
