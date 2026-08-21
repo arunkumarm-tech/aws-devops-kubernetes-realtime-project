@@ -57,5 +57,25 @@ stage('AWS CLI Check') {
                 }
             }
         }
+
+        stage('Tag Docker Image') {
+            steps {
+                sh '''
+                    docker tag \
+                      ${IMAGE_NAME}:${IMAGE_TAG} \
+                      ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+                '''
+            }
+        }
+        stage('Push Image to ECR') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh '''
+                        docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+                    '''
+                }
+            }
+        }
     }
 }
