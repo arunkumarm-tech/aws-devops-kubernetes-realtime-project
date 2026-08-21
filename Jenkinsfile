@@ -29,20 +29,19 @@ pipeline {
                 '''
             }
         }
-
-        stage('AWS CLI Check') {
-            steps {
-                sh 'aws --version'
-            }
-        }
-	stage('AWS Identity Check') {
-    	steps {
-        	withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-        credentialsId: 'aws-devops-credentials']]) {
-            sh 'aws sts get-caller-identity'
-        }
+stage('AWS CLI Check') {
+    steps {
+        sh 'aws --version'
     }
 }
 
+        stage('AWS Identity Check') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh 'aws sts get-caller-identity'
+                }
+            }
+        }
     }
 }
