@@ -22,13 +22,17 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build \
+                    docker buildx build \
+                      --platform linux/amd64 \
                       -f docker/Dockerfile \
                       -t ${IMAGE_NAME}:${IMAGE_TAG} \
+                      --load \
                       .
                 '''
             }
         }
+
+
 stage('AWS CLI Check') {
     steps {
         sh 'aws --version'
