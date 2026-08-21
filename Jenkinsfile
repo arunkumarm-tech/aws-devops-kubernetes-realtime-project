@@ -125,5 +125,26 @@ stage('AWS CLI Check') {
                 }
             }
         }
+
+        stage('Verify Deployment') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh '''
+                        export KUBECONFIG="${WORKSPACE}/.kubeconfig"
+
+                        kubectl get deployment arun-flask-deployment \
+                          -n arun-devops
+
+                        kubectl get pods \
+                          -n arun-devops \
+                          -o wide
+
+                        kubectl get service arun-flask-service \
+                          -n arun-devops
+                    '''
+                }
+            }
+        }
     }
 }
