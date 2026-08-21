@@ -35,5 +35,14 @@ pipeline {
                 sh 'aws --version'
             }
         }
+	stage('AWS Identity Check') {
+    	steps {
+        	withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+        credentialsId: 'aws-devops-credentials']]) {
+            sh 'aws sts get-caller-identity'
+        }
+    }
+}
+
     }
 }
