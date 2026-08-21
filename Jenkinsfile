@@ -84,5 +84,23 @@ stage('AWS CLI Check') {
                 }
             }
         }
+
+        stage('Configure EKS Access') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-devops-credentials']]) {
+                    sh '''
+                        export KUBECONFIG="${WORKSPACE}/.kubeconfig"
+
+                        aws eks update-kubeconfig \
+                          --name arun-eks-cluster \
+                          --region ${AWS_REGION} \
+                          --kubeconfig "${KUBECONFIG}"
+
+                        kubectl get nodes
+                    '''
+                }
+            }
+        }
     }
 }
